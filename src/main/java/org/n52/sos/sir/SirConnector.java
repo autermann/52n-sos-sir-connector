@@ -21,19 +21,22 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+package org.n52.sos.sir;
 
-package org.n52.sensorweb.sos.sir;
-
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 import org.n52.sos.config.annotation.Configurable;
 import org.n52.sos.config.annotation.Setting;
+import org.n52.sos.exception.ConfigurationException;
 import org.n52.sos.request.DeleteSensorRequest;
 import org.n52.sos.request.InsertSensorRequest;
 import org.n52.sos.request.UpdateSensorRequest;
 import org.n52.sos.response.DeleteSensorResponse;
 import org.n52.sos.response.InsertSensorResponse;
 import org.n52.sos.response.UpdateSensorResponse;
+import org.n52.sos.service.ServiceSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,28 +45,43 @@ import org.slf4j.LoggerFactory;
  */
 @Configurable
 public class SirConnector {
-
     private static final Logger log = LoggerFactory.getLogger(SirConnector.class);
-    private URI serviceUri;
-
-
-    void onModify(UpdateSensorRequest request, UpdateSensorResponse response) {
-        /* TODO implement org.n52.sensorweb.sos.sir.SirConnector.onModify() */
-        throw new UnsupportedOperationException("org.n52.sensorweb.sos.sir.SirConnector.onModify() not yet implemented");
-    }
-
-    void onDelete(DeleteSensorRequest request, DeleteSensorResponse response) {
-        /* TODO implement org.n52.sensorweb.sos.sir.SirConnector.onDelete() */
-        throw new UnsupportedOperationException("org.n52.sensorweb.sos.sir.SirConnector.onDelete() not yet implemented");
-    }
-
-    void onInsert(InsertSensorRequest request, InsertSensorResponse response) {
-        /* TODO implement org.n52.sensorweb.sos.sir.SirConnector.onInsert() */
-        throw new UnsupportedOperationException("org.n52.sensorweb.sos.sir.SirConnector.onInsert() not yet implemented");
-    }
+    private URL sirServiceUrl;
+    private URL sosServiceUrl;
 
     @Setting(SirSettings.SERVICE_URL)
     public void setServiceUri(URI serviceUri) {
-        this.serviceUri = serviceUri;
+        if (serviceUri != null) {
+            try {
+                this.sirServiceUrl = serviceUri.toURL();
+            } catch (MalformedURLException ex) {
+                throw new ConfigurationException("Invalid SIR service URL", ex);
+            }
+        } else {
+            this.sirServiceUrl = null;
+        }
+        
+    }
+
+    @Setting(ServiceSettings.SERVICE_URL)
+    public void setSosServiceUri(URI serviceUri) {
+        if (serviceUri != null) {
+            try {
+                this.sosServiceUrl = serviceUri.toURL();
+            } catch (MalformedURLException ex) {
+                throw new ConfigurationException("Invalid SOS service URL", ex);
+            }
+        } else {
+            this.sosServiceUrl = null;
+        }
+    }
+
+    void onModify(UpdateSensorRequest request, UpdateSensorResponse response) {
+    }
+
+    void onDelete(DeleteSensorRequest request, DeleteSensorResponse response) {
+    }
+
+    void onInsert(InsertSensorRequest request, InsertSensorResponse response) {
     }
 }
