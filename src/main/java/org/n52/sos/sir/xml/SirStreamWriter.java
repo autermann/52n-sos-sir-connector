@@ -32,7 +32,7 @@ import org.n52.sos.sir.SirConstants;
 public abstract class SirStreamWriter extends StreamWriter implements SirConstants {
 
     public SirStreamWriter() {
-        super(NS_SIR_PREFIX, NS_SIR);
+        super(NS_SIR, NS_SIR_PREFIX);
     }
 
 }
