@@ -40,6 +40,11 @@ public class UpdateRequestStreamWriter extends SirStreamWriter {
         return this;
     }
 
+    public UpdateRequestStreamWriter setSensorDescription(String sensorDescription) {
+        this.sensorDescription = sensorDescription;
+        return this;
+    }
+
     @Override
     protected void write() throws XMLStreamException {
         writeUpdateSensorDescriptionRequest();
