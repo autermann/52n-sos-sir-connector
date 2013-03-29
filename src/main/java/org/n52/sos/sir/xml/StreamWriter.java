@@ -21,13 +21,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
-
 package org.n52.sos.sir.xml;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventReader;
@@ -36,19 +42,24 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
-
-import javanet.staxutils.IndentingXMLEventWriter;
 
 /**
  * @author Christian Autermann <c.autermann@52north.org>
  */
 public abstract class StreamWriter {
-
-    private final XMLEventFactory eventFactory = XMLEventFactory.newInstance();
-    private final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-    private final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+    public static final String INDENTATION = "  ";
+    private final XMLEventFactory ef = XMLEventFactory.newInstance();
+    private final XMLInputFactory inf = XMLInputFactory.newInstance();
+    private final XMLOutputFactory outf = XMLOutputFactory.newInstance();
     private final String namespace;
     private final String prefix;
     private XMLEventWriter w;
@@ -59,86 +70,92 @@ public abstract class StreamWriter {
     }
 
     protected void attr(String name, String value) throws XMLStreamException {
-        w.add(eventFactory.createAttribute(name, value));
+        w.add(ef.createAttribute(name, value));
     }
 
     protected void chars(String chars) throws XMLStreamException {
-        w.add(eventFactory.createCharacters(chars));
+        w.add(ef.createCharacters(chars));
     }
 
     protected void copy(String xml) throws XMLStreamException {
         ByteArrayInputStream in = null;
         try {
-            in = new ByteArrayInputStream(xml.getBytes("utf-8"));
-            XMLEventReader r = inputFactory.createXMLEventReader(in);
-            while (r.hasNext()) {
-                XMLEvent e = r.nextEvent();
-                if (!e.isEndDocument() && !e.isStartDocument()) {
-                    w.add(e);
+            in = new ByteArrayInputStream(xml.trim().getBytes("utf-8"));
+            XMLEventReader r = inf.createXMLEventReader(in);
+            XMLEvent c = null, p = null;
+            while (r.hasNext() && (c = r.nextEvent()) != null) {
+                // ignore end -> space and start -> space -> start & <?xml?> -> space
+                if (!(p != null && c.isCharacters() && (p.isStartDocument() || p.isEndElement()
+                                                        || (p.isStartElement() && r.peek() != null && r.peek()
+                        .isStartElement())))) {
+                    switch (c.getEventType()) {
+                        case XMLEvent.DTD:
+                        case XMLEvent.PROCESSING_INSTRUCTION:
+                        case XMLEvent.COMMENT:
+                        case XMLEvent.SPACE:
+                        case XMLEvent.START_DOCUMENT:
+                        case XMLEvent.END_DOCUMENT:
+                            break;
+                        default:
+                            w.add(c);
+                    }
                 }
+                p = c;
             }
         } catch (UnsupportedEncodingException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         } finally {
             IOUtils.closeQuietly(in);
         }
     }
 
     protected void end(String name) throws XMLStreamException {
-        w.add(eventFactory.createEndElement(this.prefix, this.namespace, name));
+        w.add(ef.createEndElement(this.prefix, this.namespace, name));
+
     }
 
     protected void end() throws XMLStreamException {
-        w.add(eventFactory.createEndDocument());
+        w.add(ef.createEndDocument());
     }
 
     protected void namespace(String prefix, String namespace) throws XMLStreamException {
-        w.add(eventFactory.createNamespace(prefix, namespace));
+        w.add(ef.createNamespace(prefix, namespace));
     }
 
     protected void start(String name) throws XMLStreamException {
-        w.add(eventFactory.createStartElement(this.prefix, this.namespace, name));
+        w.add(ef.createStartElement(this.prefix, this.namespace, name));
+
     }
 
     protected void start() throws XMLStreamException {
-        w.add(eventFactory.createStartDocument());
+        w.add(ef.createStartDocument());
+    }
+
+    protected void addTo(XMLEventWriter out) throws XMLStreamException {
+        this.w = out;
+        write();
+    }
+
+    protected void include(StreamWriter w) throws XMLStreamException {
+        w.addTo(this.w);
     }
 
     public void write(OutputStream out) throws XMLStreamException {
-        this.w = new IndentingXMLEventWriter(outputFactory.createXMLEventWriter(out));
+        this.w = outf.createXMLEventWriter(out);
         _write();
     }
 
     public void write(Writer out) throws XMLStreamException {
-        this.w = new IndentingXMLEventWriter(outputFactory.createXMLEventWriter(out));
+        this.w = outf.createXMLEventWriter(out);
         _write();
     }
 
     public void write(XMLEventWriter out) throws XMLStreamException {
-        this.w = new IndentingXMLEventWriter(out);
+        this.w = out;
         _write();
     }
 
-    public void writeDocument(OutputStream out) throws XMLStreamException {
-        this.w = new IndentingXMLEventWriter(outputFactory.createXMLEventWriter(out));
-        _writeDocument();
-    }
-
-    public void writeDocument(Writer out) throws XMLStreamException {
-        this.w = new IndentingXMLEventWriter(outputFactory.createXMLEventWriter(out));
-        _writeDocument();
-    }
-
-    public void writeDocument(XMLEventWriter out) throws XMLStreamException {
-        this.w = new IndentingXMLEventWriter(out);
-        _writeDocument();
-    }
-
-    protected void include(StreamWriter sw) throws XMLStreamException {
-        sw.write(this.w);
-    }
-
-    private void _writeDocument() throws XMLStreamException {
+    private void _write() throws XMLStreamException {
         start();
         write();
         end();
@@ -146,11 +163,62 @@ public abstract class StreamWriter {
         w.close();
     }
 
-    private void _write() throws XMLStreamException {
-        write();
-        w.flush();
-        w.close();
+    public void writePretty(OutputStream out) throws TransformerConfigurationException, TransformerException,
+                                                     IOException, XMLStreamException {
+        PipedInputStream in = new PipedInputStream();
+        final PipedOutputStream tout = new PipedOutputStream(in);
+        final List<Throwable> exceptions = Collections.synchronizedList(new LinkedList<Throwable>());
+        Thread writerThread = new Thread(new WriterRunnable(tout));
+        writerThread.setUncaughtExceptionHandler(new CollectionExceptionHandler(exceptions));
+        writerThread.start();
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.transform(new StreamSource(in), new StreamResult(out));
+        for (Throwable t : exceptions) {
+            if (t instanceof XMLStreamException) {
+                throw (XMLStreamException) t;
+            } else if (t instanceof IOException) {
+                throw (IOException) t;
+            } else {
+                throw new RuntimeException(t);
+            }
+        }
     }
 
     protected abstract void write() throws XMLStreamException;
+
+    private static class CollectionExceptionHandler implements UncaughtExceptionHandler {
+        private final List<Throwable> exceptions;
+
+        CollectionExceptionHandler(
+                List<Throwable> exceptions) {
+            this.exceptions = exceptions;
+        }
+
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            exceptions.add(e);
+        }
+    }
+
+    private class WriterRunnable implements Runnable {
+        private final PipedOutputStream tout;
+
+        WriterRunnable(PipedOutputStream tout) {
+            this.tout = tout;
+        }
+
+        @Override
+        public void run() {
+            try {
+                write(tout);
+                tout.flush();
+                tout.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (XMLStreamException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 }
