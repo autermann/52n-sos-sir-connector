@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sir:DeleteSensorInfoRequest xmlns:sir="http://swsl.uni-muenster.de/sir" version="0.3.1" service="SIR">
+   <sir:InfoToBeDeleted>
+      <sir:SensorIdentification>
+         <sir:SensorIDInSIR>urn:sir:FR17016</sir:SensorIDInSIR>
+      </sir:SensorIdentification>
+      <sir:DeleteSensor>true</sir:DeleteSensor>
+   </sir:InfoToBeDeleted>
+   <sir:InfoToBeDeleted>
+      <sir:SensorIdentification>
+         <sir:ServiceReference>
+            <sir:ServiceURL>http://localhost:8080/52n-sos-webapp/sos/kvp</sir:ServiceURL>
+            <sir:ServiceType>SOS</sir:ServiceType>
+            <sir:ServiceSpecificSensorID>urn:ogc:object:feature:Sensor:EEA:airbase:7.0:FR17016</sir:ServiceSpecificSensorID>
+         </sir:ServiceReference>
+      </sir:SensorIdentification>
+      <sir:DeleteSensor>true</sir:DeleteSensor>
+   </sir:InfoToBeDeleted>
+</sir:DeleteSensorInfoRequest>
