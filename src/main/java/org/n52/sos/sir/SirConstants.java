@@ -27,6 +27,7 @@ package org.n52.sos.sir;
  * @author Christian Autermann <c.autermann@52north.org>
  */
 public interface SirConstants {
+    String UTF8 = "UTF-8";
     String NS_SIR_PREFIX = "sir";
     String NS_SIR = "http://swsl.uni-muenster.de/sir";
     String SIR_SERVICE_VERSION = "0.3.1";
