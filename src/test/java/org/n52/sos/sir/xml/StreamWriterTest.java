@@ -58,7 +58,7 @@ public class StreamWriterTest {
                 .setSosProcedureIdentifier(SOS_SENSOR_ID)
                 .setSirProcedureIdentifier(SIR_SENSOR_ID)
                 .setSosServiceUrl(SOS_SERVICE_URL)
-                .write(System.out);
+                .write(new NullOutputStream());
     }
 
     @Test
@@ -66,7 +66,7 @@ public class StreamWriterTest {
         new UpdateRequestStreamWriter()
                 .setSensorDescription(sensorDescription)
                 .setSirProcedureIdentifier(SIR_SENSOR_ID)
-                .write(System.out);
+                .write(new NullOutputStream());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class StreamWriterTest {
                 .setSosProcedureIdentifier(SOS_SENSOR_ID)
                 .setSensorDescription(sensorDescription)
                 .setSosServiceUrl(SOS_SERVICE_URL)
-                .write(System.out);
+                .write(new NullOutputStream());
     }
 
     @Test
