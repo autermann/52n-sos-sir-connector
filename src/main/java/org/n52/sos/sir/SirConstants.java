@@ -23,28 +23,31 @@
  */
 package org.n52.sos.sir;
 
+import javax.xml.namespace.QName;
+
 /**
  * @author Christian Autermann <c.autermann@52north.org>
  */
 public interface SirConstants {
     String UTF8 = "UTF-8";
     String NS_SIR_PREFIX = "sir";
-    String NS_SIR = "http://swsl.uni-muenster.de/sir";
+    String NS_SIR = "http://52north.org/sir/0.3.2";
     String SIR_SERVICE_VERSION = "0.3.1";
     String SIR_SERVICE_TYPE = "SIR";
     String AN_SERVICE = "service";
     String AN_VERSION = "version";
-    String EN_INSERT_SENSOR_INFO_REQUEST = "InsertSensorInfoRequest";
-    String EN_INFO_TO_BE_INSERTED = "InfoToBeInserted";
-    String EN_SERVICE_REFERENCE = "ServiceReference";
-    String EN_SERVICE_URL = "ServiceURL";
-    String EN_SERVICE_TYPE = "ServiceType";
-    String EN_SERVICE_SPECIFIC_SENSOR_ID = "ServiceSpecificSensorID";
-    String EN_SENSOR_DESCRIPTION_TO_BE_UPDATED = "SensorDescriptionToBeUpdated";
-    String EN_SENSOR_IDENTIFICATION = "SensorIdentification";
-    String EN_SENSOR_ID_IN_SIR = "SensorIDInSIR";
-    String EN_UPDATE_SENSOR_DESCRIPTION_REQUEST = "UpdateSensorDescriptionRequest";
-    String EN_DELETE_SENSOR_INFO_REQUEST = "DeleteSensorInfoRequest";
-    String EN_INFO_TO_BE_DELETED = "InfoToBeDeleted";
-    String EN_DELETE_SENSOR = "DeleteSensor";
+    QName QN_INSERT_SENSOR_INFO_REQUEST = new QName(NS_SIR, "InsertSensorInfoRequest", NS_SIR_PREFIX);
+    QName QN_INFO_TO_BE_INSERTED = new QName(NS_SIR, "InfoToBeInserted", NS_SIR_PREFIX);
+    QName QN_SERVICE_REFERENCE = new QName(NS_SIR, "ServiceReference", NS_SIR_PREFIX);
+    QName QN_SERVICE_URL = new QName(NS_SIR, "ServiceURL", NS_SIR_PREFIX);
+    QName QN_SERVICE_TYPE = new QName(NS_SIR, "ServiceType", NS_SIR_PREFIX);
+    QName QN_SERVICE_SPECIFIC_SENSOR_ID = new QName(NS_SIR, "ServiceSpecificSensorID", NS_SIR_PREFIX);
+    QName QN_SENSOR_DESCRIPTION_TO_BE_UPDATED = new QName(NS_SIR, "SensorDescriptionToBeUpdated", NS_SIR_PREFIX);
+    QName QN_SENSOR_IDENTIFICATION = new QName(NS_SIR, "SensorIdentification", NS_SIR_PREFIX);
+    QName QN_SENSOR_ID_IN_SIR = new QName(NS_SIR, "SensorIDInSIR", NS_SIR_PREFIX);
+    QName QN_UPDATE_SENSOR_DESCRIPTION_REQUEST = new QName(NS_SIR, "UpdateSensorDescriptionRequest", NS_SIR_PREFIX);
+    QName QN_DELETE_SENSOR_INFO_REQUEST = new QName(NS_SIR, "DeleteSensorInfoRequest", NS_SIR_PREFIX);
+    QName QN_INFO_TO_BE_DELETED = new QName(NS_SIR, "InfoToBeDeleted", NS_SIR_PREFIX);
+    QName QN_DELETE_SENSOR = new QName(NS_SIR, "DeleteSensor", NS_SIR_PREFIX);
+    QName QN_SENSOR_DESCRIPTION = new QName(NS_SIR, "SensorDescription", NS_SIR_PREFIX);
 }

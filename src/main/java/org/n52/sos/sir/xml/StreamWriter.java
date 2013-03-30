@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
@@ -60,14 +61,7 @@ public abstract class StreamWriter {
     private final XMLEventFactory ef = XMLEventFactory.newInstance();
     private final XMLInputFactory inf = XMLInputFactory.newInstance();
     private final XMLOutputFactory outf = XMLOutputFactory.newInstance();
-    private final String namespace;
-    private final String prefix;
     private XMLEventWriter w;
-
-    protected StreamWriter(String defaultNamespace, String defaultNamespacePrefix) {
-        this.namespace = defaultNamespace;
-        this.prefix = defaultNamespacePrefix;
-    }
 
     protected void attr(String name, String value) throws XMLStreamException {
         w.add(ef.createAttribute(name, value));
@@ -109,8 +103,8 @@ public abstract class StreamWriter {
         }
     }
 
-    protected void end(String name) throws XMLStreamException {
-        w.add(ef.createEndElement(this.prefix, this.namespace, name));
+    protected void end(QName name) throws XMLStreamException {
+        w.add(ef.createEndElement(name.getPrefix(), name.getNamespaceURI(), name.getLocalPart()));
 
     }
 
@@ -122,8 +116,8 @@ public abstract class StreamWriter {
         w.add(ef.createNamespace(prefix, namespace));
     }
 
-    protected void start(String name) throws XMLStreamException {
-        w.add(ef.createStartElement(this.prefix, this.namespace, name));
+    protected void start(QName name) throws XMLStreamException {
+        w.add(ef.createStartElement(name.getPrefix(), name.getNamespaceURI(), name.getLocalPart()));
 
     }
 

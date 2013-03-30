@@ -82,7 +82,7 @@ public class StreamWriterCopyTest {
         return s.toString(SirConstants.UTF8);
     }
 
-    private class CopyStreamWriter extends SirStreamWriter {
+    private class CopyStreamWriter extends StreamWriter {
         private String in;
 
         CopyStreamWriter(String in) {

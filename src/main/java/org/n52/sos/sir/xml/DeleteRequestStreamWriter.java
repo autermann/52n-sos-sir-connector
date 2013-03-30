@@ -29,11 +29,12 @@ import static org.n52.sos.sir.SirConstants.*;
 import javax.xml.stream.XMLStreamException;
 
 import org.n52.sos.ogc.sos.SosConstants;
+import org.n52.sos.sir.SirConstants;
 
 /**
  * @author Christian Autermann <c.autermann@52north.org>
  */
-public class DeleteRequestStreamWriter extends SirStreamWriter {
+public class DeleteRequestStreamWriter extends StreamWriter implements SirConstants {
     private String sirProcedureIdentifier;
     private String sosProcedureIdentifier;
     private String sosServiceUrl;
@@ -59,12 +60,12 @@ public class DeleteRequestStreamWriter extends SirStreamWriter {
     }
 
     private void writeDeleteSensorInfoRequest() throws XMLStreamException {
-        start(EN_DELETE_SENSOR_INFO_REQUEST);
+        start(QN_DELETE_SENSOR_INFO_REQUEST);
         namespace(NS_SIR_PREFIX, NS_SIR);
         attr(AN_VERSION, SIR_SERVICE_VERSION);
         attr(AN_SERVICE, SIR_SERVICE_TYPE);
         writeInfoToBeDeleted();
-        end(EN_DELETE_SENSOR_INFO_REQUEST);
+        end(QN_DELETE_SENSOR_INFO_REQUEST);
     }
 
     private void writeInfoToBeDeleted() throws XMLStreamException {
@@ -73,66 +74,66 @@ public class DeleteRequestStreamWriter extends SirStreamWriter {
     }
 
     private void writeSirSensorIdentification() throws XMLStreamException {
-        start(EN_SENSOR_IDENTIFICATION);
+        start(QN_SENSOR_IDENTIFICATION);
         writeSensorIDInSIR();
-        end(EN_SENSOR_IDENTIFICATION);
+        end(QN_SENSOR_IDENTIFICATION);
     }
 
     private void writeSensorIDInSIR() throws XMLStreamException {
-        start(EN_SENSOR_ID_IN_SIR);
+        start(QN_SENSOR_ID_IN_SIR);
         chars(this.sirProcedureIdentifier);
-        end(EN_SENSOR_ID_IN_SIR);
+        end(QN_SENSOR_ID_IN_SIR);
     }
 
     private void writeDeleteSensor() throws XMLStreamException {
-        start(EN_DELETE_SENSOR);
+        start(QN_DELETE_SENSOR);
         chars(String.valueOf(true));
-        end(EN_DELETE_SENSOR);
+        end(QN_DELETE_SENSOR);
     }
 
     private void writeSosSensorIdentification() throws XMLStreamException {
-        start(EN_SENSOR_IDENTIFICATION);
+        start(QN_SENSOR_IDENTIFICATION);
         writeServiceReference();
-        end(EN_SENSOR_IDENTIFICATION);
+        end(QN_SENSOR_IDENTIFICATION);
     }
 
     private void writeServiceReference() throws XMLStreamException {
-        start(EN_SERVICE_REFERENCE);
+        start(QN_SERVICE_REFERENCE);
         writeServiceURL();
         writeServiceType();
         writeServiceSpecificSensorID();
-        end(EN_SERVICE_REFERENCE);
+        end(QN_SERVICE_REFERENCE);
     }
 
     protected void writeServiceURL() throws XMLStreamException {
-        start(EN_SERVICE_URL);
+        start(QN_SERVICE_URL);
         chars(sosServiceUrl);
-        end(EN_SERVICE_URL);
+        end(QN_SERVICE_URL);
     }
 
     protected void writeServiceType() throws XMLStreamException {
-        start(EN_SERVICE_TYPE);
+        start(QN_SERVICE_TYPE);
         chars(SosConstants.SOS);
-        end(EN_SERVICE_TYPE);
+        end(QN_SERVICE_TYPE);
     }
 
     protected void writeServiceSpecificSensorID() throws XMLStreamException {
-        start(EN_SERVICE_SPECIFIC_SENSOR_ID);
+        start(QN_SERVICE_SPECIFIC_SENSOR_ID);
         chars(this.sosProcedureIdentifier);
-        end(EN_SERVICE_SPECIFIC_SENSOR_ID);
+        end(QN_SERVICE_SPECIFIC_SENSOR_ID);
     }
 
     protected void writeSosInfoToBeDeleted() throws XMLStreamException {
-        start(EN_INFO_TO_BE_DELETED);
+        start(QN_INFO_TO_BE_DELETED);
         writeSosSensorIdentification();
         writeDeleteSensor();
-        end(EN_INFO_TO_BE_DELETED);
+        end(QN_INFO_TO_BE_DELETED);
     }
 
     protected void writeSirInfoToBeDeleted() throws XMLStreamException {
-        start(EN_INFO_TO_BE_DELETED);
+        start(QN_INFO_TO_BE_DELETED);
         writeSirSensorIdentification();
         writeDeleteSensor();
-        end(EN_INFO_TO_BE_DELETED);
+        end(QN_INFO_TO_BE_DELETED);
     }
 }

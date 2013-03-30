@@ -32,10 +32,6 @@ import javax.xml.stream.XMLStreamException;
 public class SensorDescriptionStreamWriter extends StreamWriter {
     private String sensorDescription;
 
-    public SensorDescriptionStreamWriter() {
-        super(null, null);
-    }
-
     public SensorDescriptionStreamWriter setSensorDescription(String sensorDescription) {
         this.sensorDescription = sensorDescription;
         return this;

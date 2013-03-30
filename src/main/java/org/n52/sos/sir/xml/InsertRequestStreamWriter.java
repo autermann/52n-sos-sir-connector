@@ -26,11 +26,12 @@ package org.n52.sos.sir.xml;
 import javax.xml.stream.XMLStreamException;
 
 import org.n52.sos.ogc.sos.SosConstants;
+import org.n52.sos.sir.SirConstants;
 
 /**
  * @author Christian Autermann <c.autermann@52north.org>
  */
-public class InsertRequestStreamWriter extends SirStreamWriter {
+public class InsertRequestStreamWriter extends StreamWriter implements SirConstants {
     private String sosServiceUrl;
     private String sosProcedureIdentifier;
     private String sensorDescription;
@@ -56,44 +57,50 @@ public class InsertRequestStreamWriter extends SirStreamWriter {
     }
 
     protected void writeInsertSensorInfoRequest() throws XMLStreamException {
-        start(EN_INSERT_SENSOR_INFO_REQUEST);
+        start(QN_INSERT_SENSOR_INFO_REQUEST);
         namespace(NS_SIR_PREFIX, NS_SIR);
         attr(AN_VERSION, SIR_SERVICE_VERSION);
         attr(AN_SERVICE, SIR_SERVICE_TYPE);
         writeInfoToBeInserted();
-        end(EN_INSERT_SENSOR_INFO_REQUEST);
+        end(QN_INSERT_SENSOR_INFO_REQUEST);
     }
 
     protected void writeInfoToBeInserted() throws XMLStreamException {
-        start(EN_INFO_TO_BE_INSERTED);
+        start(QN_INFO_TO_BE_INSERTED);
         writeServiceReference();
-        include(new SensorDescriptionStreamWriter().setSensorDescription(this.sensorDescription));
-        end(EN_INFO_TO_BE_INSERTED);
+        writeSensorDescription();
+        end(QN_INFO_TO_BE_INSERTED);
     }
 
     protected void writeServiceReference() throws XMLStreamException {
-        start(EN_SERVICE_REFERENCE);
+        start(QN_SERVICE_REFERENCE);
         writeServiceURL();
         writeServiceType();
         writeServiceSpecificSensorID();
-        end(EN_SERVICE_REFERENCE);
+        end(QN_SERVICE_REFERENCE);
     }
 
     protected void writeServiceURL() throws XMLStreamException {
-        start(EN_SERVICE_URL);
+        start(QN_SERVICE_URL);
         chars(sosServiceUrl);
-        end(EN_SERVICE_URL);
+        end(QN_SERVICE_URL);
     }
 
     protected void writeServiceType() throws XMLStreamException {
-        start(EN_SERVICE_TYPE);
+        start(QN_SERVICE_TYPE);
         chars(SosConstants.SOS);
-        end(EN_SERVICE_TYPE);
+        end(QN_SERVICE_TYPE);
     }
 
     protected void writeServiceSpecificSensorID() throws XMLStreamException {
-        start(EN_SERVICE_SPECIFIC_SENSOR_ID);
+        start(QN_SERVICE_SPECIFIC_SENSOR_ID);
         chars(this.sosProcedureIdentifier);
-        end(EN_SERVICE_SPECIFIC_SENSOR_ID);
+        end(QN_SERVICE_SPECIFIC_SENSOR_ID);
+    }
+
+    private void writeSensorDescription() throws XMLStreamException {
+        start(QN_SENSOR_DESCRIPTION);
+        include(new SensorDescriptionStreamWriter().setSensorDescription(this.sensorDescription));
+        end(QN_SENSOR_DESCRIPTION);
     }
 }

@@ -28,10 +28,12 @@ import static org.n52.sos.sir.SirConstants.*;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.n52.sos.sir.SirConstants;
+
 /**
  * @author Christian Autermann <c.autermann@52north.org>
  */
-public class UpdateRequestStreamWriter extends SirStreamWriter {
+public class UpdateRequestStreamWriter extends StreamWriter implements SirConstants {
     private String sirProcedureIdentifier;
     private String sensorDescription;
 
@@ -51,22 +53,22 @@ public class UpdateRequestStreamWriter extends SirStreamWriter {
     }
 
     private void writeSensorDescriptionToBeUpdated() throws XMLStreamException {
-        start(EN_SENSOR_DESCRIPTION_TO_BE_UPDATED);
+        start(QN_SENSOR_DESCRIPTION_TO_BE_UPDATED);
         writeSensorIdentification();
         writeSensorDescription();
-        end(EN_SENSOR_DESCRIPTION_TO_BE_UPDATED);
+        end(QN_SENSOR_DESCRIPTION_TO_BE_UPDATED);
     }
 
     private void writeSensorIdentification() throws XMLStreamException {
-        start(EN_SENSOR_IDENTIFICATION);
+        start(QN_SENSOR_IDENTIFICATION);
         writeSensorIDInSIR();
-        end(EN_SENSOR_IDENTIFICATION);
+        end(QN_SENSOR_IDENTIFICATION);
     }
 
     private void writeSensorIDInSIR() throws XMLStreamException {
-        start(EN_SENSOR_ID_IN_SIR);
+        start(QN_SENSOR_ID_IN_SIR);
         chars(this.sirProcedureIdentifier);
-        end(EN_SENSOR_ID_IN_SIR);
+        end(QN_SENSOR_ID_IN_SIR);
     }
 
     private void writeSensorDescription() throws XMLStreamException {
@@ -74,11 +76,11 @@ public class UpdateRequestStreamWriter extends SirStreamWriter {
     }
 
     protected void writeUpdateSensorDescriptionRequest() throws XMLStreamException {
-        start(EN_UPDATE_SENSOR_DESCRIPTION_REQUEST);
+        start(QN_UPDATE_SENSOR_DESCRIPTION_REQUEST);
         namespace(NS_SIR_PREFIX, NS_SIR);
         attr(AN_VERSION, SIR_SERVICE_VERSION);
         attr(AN_SERVICE, SIR_SERVICE_TYPE);
         writeSensorDescriptionToBeUpdated();
-        end(EN_UPDATE_SENSOR_DESCRIPTION_REQUEST);
+        end(QN_UPDATE_SENSOR_DESCRIPTION_REQUEST);
     }
 }
