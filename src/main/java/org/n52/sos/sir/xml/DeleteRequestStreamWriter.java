@@ -29,12 +29,11 @@ import static org.n52.sos.sir.SirConstants.*;
 import javax.xml.stream.XMLStreamException;
 
 import org.n52.sos.ogc.sos.SosConstants;
-import org.n52.sos.sir.SirConstants;
 
 /**
  * @author Christian Autermann <c.autermann@52north.org>
  */
-public class DeleteRequestStreamWriter extends StreamWriter implements SirConstants {
+public class DeleteRequestStreamWriter extends SirStreamWriter {
     private String sirProcedureIdentifier;
     private String sosProcedureIdentifier;
     private String sosServiceUrl;
@@ -61,7 +60,7 @@ public class DeleteRequestStreamWriter extends StreamWriter implements SirConsta
 
     private void writeDeleteSensorInfoRequest() throws XMLStreamException {
         start(QN_DELETE_SENSOR_INFO_REQUEST);
-        namespace(NS_SIR_PREFIX, NS_SIR);
+        namespaces();
         attr(AN_VERSION, SIR_SERVICE_VERSION);
         attr(AN_SERVICE, SIR_SERVICE_TYPE);
         writeInfoToBeDeleted();

@@ -26,12 +26,11 @@ package org.n52.sos.sir.xml;
 import javax.xml.stream.XMLStreamException;
 
 import org.n52.sos.ogc.sos.SosConstants;
-import org.n52.sos.sir.SirConstants;
 
 /**
  * @author Christian Autermann <c.autermann@52north.org>
  */
-public class InsertRequestStreamWriter extends StreamWriter implements SirConstants {
+public class InsertRequestStreamWriter extends SirStreamWriter {
     private String sosServiceUrl;
     private String sosProcedureIdentifier;
     private String sensorDescription;
@@ -58,7 +57,7 @@ public class InsertRequestStreamWriter extends StreamWriter implements SirConsta
 
     protected void writeInsertSensorInfoRequest() throws XMLStreamException {
         start(QN_INSERT_SENSOR_INFO_REQUEST);
-        namespace(NS_SIR_PREFIX, NS_SIR);
+        namespaces();
         attr(AN_VERSION, SIR_SERVICE_VERSION);
         attr(AN_SERVICE, SIR_SERVICE_TYPE);
         writeInfoToBeInserted();
@@ -67,8 +66,8 @@ public class InsertRequestStreamWriter extends StreamWriter implements SirConsta
 
     protected void writeInfoToBeInserted() throws XMLStreamException {
         start(QN_INFO_TO_BE_INSERTED);
+        writeSensorDescription(this.sensorDescription);
         writeServiceReference();
-        writeSensorDescription();
         end(QN_INFO_TO_BE_INSERTED);
     }
 
@@ -98,9 +97,4 @@ public class InsertRequestStreamWriter extends StreamWriter implements SirConsta
         end(QN_SERVICE_SPECIFIC_SENSOR_ID);
     }
 
-    private void writeSensorDescription() throws XMLStreamException {
-        start(QN_SENSOR_DESCRIPTION);
-        include(new SensorDescriptionStreamWriter().setSensorDescription(this.sensorDescription));
-        end(QN_SENSOR_DESCRIPTION);
-    }
 }

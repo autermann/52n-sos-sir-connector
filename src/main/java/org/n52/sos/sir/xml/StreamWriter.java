@@ -57,25 +57,24 @@ import org.apache.commons.io.IOUtils;
  * @author Christian Autermann <c.autermann@52north.org>
  */
 public abstract class StreamWriter {
-    public static final String INDENTATION = "  ";
-    private final XMLEventFactory ef = XMLEventFactory.newInstance();
-    private final XMLInputFactory inf = XMLInputFactory.newInstance();
-    private final XMLOutputFactory outf = XMLOutputFactory.newInstance();
-    private XMLEventWriter w;
+    private final XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+    private final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+    private final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+    private XMLEventWriter writer;
 
     protected void attr(String name, String value) throws XMLStreamException {
-        w.add(ef.createAttribute(name, value));
+        writer.add(eventFactory.createAttribute(name, value));
     }
 
     protected void chars(String chars) throws XMLStreamException {
-        w.add(ef.createCharacters(chars));
+        writer.add(eventFactory.createCharacters(chars));
     }
 
     protected void copy(String xml) throws XMLStreamException {
         ByteArrayInputStream in = null;
         try {
             in = new ByteArrayInputStream(xml.trim().getBytes("utf-8"));
-            XMLEventReader r = inf.createXMLEventReader(in);
+            XMLEventReader r = inputFactory.createXMLEventReader(in);
             XMLEvent c = null, p = null;
             while (r.hasNext() && (c = r.nextEvent()) != null) {
                 // ignore end -> space and start -> space -> start & <?xml?> -> space
@@ -91,7 +90,7 @@ public abstract class StreamWriter {
                         case XMLEvent.END_DOCUMENT:
                             break;
                         default:
-                            w.add(c);
+                            writer.add(c);
                     }
                 }
                 p = c;
@@ -104,48 +103,48 @@ public abstract class StreamWriter {
     }
 
     protected void end(QName name) throws XMLStreamException {
-        w.add(ef.createEndElement(name.getPrefix(), name.getNamespaceURI(), name.getLocalPart()));
+        writer.add(eventFactory.createEndElement(name.getPrefix(), name.getNamespaceURI(), name.getLocalPart()));
 
     }
 
     protected void end() throws XMLStreamException {
-        w.add(ef.createEndDocument());
+        writer.add(eventFactory.createEndDocument());
     }
 
     protected void namespace(String prefix, String namespace) throws XMLStreamException {
-        w.add(ef.createNamespace(prefix, namespace));
+        writer.add(eventFactory.createNamespace(prefix, namespace));
     }
 
     protected void start(QName name) throws XMLStreamException {
-        w.add(ef.createStartElement(name.getPrefix(), name.getNamespaceURI(), name.getLocalPart()));
+        writer.add(eventFactory.createStartElement(name.getPrefix(), name.getNamespaceURI(), name.getLocalPart()));
 
     }
 
     protected void start() throws XMLStreamException {
-        w.add(ef.createStartDocument());
+        writer.add(eventFactory.createStartDocument());
     }
 
     protected void addTo(XMLEventWriter out) throws XMLStreamException {
-        this.w = out;
+        this.writer = out;
         write();
     }
 
     protected void include(StreamWriter w) throws XMLStreamException {
-        w.addTo(this.w);
+        w.addTo(this.writer);
     }
 
     public void write(OutputStream out) throws XMLStreamException {
-        this.w = outf.createXMLEventWriter(out);
+        this.writer = outputFactory.createXMLEventWriter(out);
         _write();
     }
 
     public void write(Writer out) throws XMLStreamException {
-        this.w = outf.createXMLEventWriter(out);
+        this.writer = outputFactory.createXMLEventWriter(out);
         _write();
     }
 
     public void write(XMLEventWriter out) throws XMLStreamException {
-        this.w = out;
+        this.writer = out;
         _write();
     }
 
@@ -153,8 +152,8 @@ public abstract class StreamWriter {
         start();
         write();
         end();
-        w.flush();
-        w.close();
+        writer.flush();
+        writer.close();
     }
 
     public void writePretty(OutputStream out) throws TransformerConfigurationException, TransformerException,
@@ -180,6 +179,22 @@ public abstract class StreamWriter {
     }
 
     protected abstract void write() throws XMLStreamException;
+
+    public XMLEventFactory getEventFactory() {
+        return eventFactory;
+    }
+
+    public XMLInputFactory getInputFactory() {
+        return inputFactory;
+    }
+
+    public XMLOutputFactory getOutputFactory() {
+        return outputFactory;
+    }
+
+    public XMLEventWriter getWriter() {
+        return writer;
+    }
 
     private static class CollectionExceptionHandler implements UncaughtExceptionHandler {
         private final List<Throwable> exceptions;

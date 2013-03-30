@@ -53,19 +53,12 @@ public class StreamWriterTest {
     private String sensorDescription;
 
     @Test
-    public void testSensorDescription() throws FileNotFoundException, XMLStreamException {
-        new SensorDescriptionStreamWriter()
-                .setSensorDescription(sensorDescription)
-                .write(new NullOutputStream());
-    }
-
-    @Test
     public void testDeleteRequest() throws FileNotFoundException, XMLStreamException {
         new DeleteRequestStreamWriter()
                 .setSosProcedureIdentifier(SOS_SENSOR_ID)
                 .setSirProcedureIdentifier(SIR_SENSOR_ID)
                 .setSosServiceUrl(SOS_SERVICE_URL)
-                .write(new NullOutputStream());
+                .write(System.out);
     }
 
     @Test
@@ -73,7 +66,7 @@ public class StreamWriterTest {
         new UpdateRequestStreamWriter()
                 .setSensorDescription(sensorDescription)
                 .setSirProcedureIdentifier(SIR_SENSOR_ID)
-                .write(new NullOutputStream());
+                .write(System.out);
     }
 
     @Test
@@ -82,18 +75,7 @@ public class StreamWriterTest {
                 .setSosProcedureIdentifier(SOS_SENSOR_ID)
                 .setSensorDescription(sensorDescription)
                 .setSosServiceUrl(SOS_SERVICE_URL)
-                .write(new NullOutputStream());
-    }
-
-    @Test
-    public void testSensorDescriptionOutput() throws FileNotFoundException, XMLStreamException,
-                                                     UnsupportedEncodingException,
-                                                     IOException, TransformerConfigurationException,
-                                                     TransformerException {
-        String r = toString(new SensorDescriptionStreamWriter()
-                .setSensorDescription(sensorDescription));
-        String expected = readFile("/SensorDescription.xml");
-        assertThat(r, is(equalTo(expected)));
+                .write(System.out);
     }
 
     @Test
@@ -103,6 +85,7 @@ public class StreamWriterTest {
                 .setSosProcedureIdentifier(SOS_SENSOR_ID)
                 .setSirProcedureIdentifier(SIR_SENSOR_ID)
                 .setSosServiceUrl(SOS_SERVICE_URL));
+//        IOUtils.write(r, new FileOutputStream("/home/auti/generated-d.xml"));
         String expected = readFile("/delete.xml");
         assertThat(r, is(equalTo(expected)));
     }
@@ -113,6 +96,7 @@ public class StreamWriterTest {
         String r = toString(new UpdateRequestStreamWriter()
                 .setSensorDescription(sensorDescription)
                 .setSirProcedureIdentifier(SIR_SENSOR_ID));
+//        IOUtils.write(r, new FileOutputStream("/home/auti/generated-u.xml"));
         String expected = readFile("/update.xml");
         assertThat(r, is(equalTo(expected)));
     }
@@ -124,6 +108,7 @@ public class StreamWriterTest {
                 .setSosProcedureIdentifier(SOS_SENSOR_ID)
                 .setSensorDescription(sensorDescription)
                 .setSosServiceUrl(SOS_SERVICE_URL));
+//        IOUtils.write(r, new FileOutputStream("/home/auti/generated-i.xml"));
         String expected = readFile("/insert.xml");
         assertThat(r, is(equalTo(expected)));
     }

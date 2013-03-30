@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sir:DeleteSensorInfoRequest xmlns:sir="http://swsl.uni-muenster.de/sir" version="0.3.1" service="SIR">
+<sir:DeleteSensorInfoRequest xmlns:sir="http://52north.org/sir/0.3.2"
+                             xmlns:sml="http://www.opengis.net/sensorML/1.0.1"
+                             xmlns:gml="http://www.opengis.net/gml"
+                             xmlns:swe="http://www.opengis.net/swe/1.0.1"
+                             version="0.3.1"
+                             service="SIR">
    <sir:InfoToBeDeleted>
       <sir:SensorIdentification>
          <sir:SensorIDInSIR>urn:sir:FR17016</sir:SensorIDInSIR>

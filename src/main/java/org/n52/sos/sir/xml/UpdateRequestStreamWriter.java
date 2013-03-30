@@ -28,12 +28,10 @@ import static org.n52.sos.sir.SirConstants.*;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.n52.sos.sir.SirConstants;
-
 /**
  * @author Christian Autermann <c.autermann@52north.org>
  */
-public class UpdateRequestStreamWriter extends StreamWriter implements SirConstants {
+public class UpdateRequestStreamWriter extends SirStreamWriter {
     private String sirProcedureIdentifier;
     private String sensorDescription;
 
@@ -55,7 +53,7 @@ public class UpdateRequestStreamWriter extends StreamWriter implements SirConsta
     private void writeSensorDescriptionToBeUpdated() throws XMLStreamException {
         start(QN_SENSOR_DESCRIPTION_TO_BE_UPDATED);
         writeSensorIdentification();
-        writeSensorDescription();
+        writeSensorDescription(this.sensorDescription);
         end(QN_SENSOR_DESCRIPTION_TO_BE_UPDATED);
     }
 
@@ -71,13 +69,9 @@ public class UpdateRequestStreamWriter extends StreamWriter implements SirConsta
         end(QN_SENSOR_ID_IN_SIR);
     }
 
-    private void writeSensorDescription() throws XMLStreamException {
-        include(new SensorDescriptionStreamWriter().setSensorDescription(this.sensorDescription));
-    }
-
     protected void writeUpdateSensorDescriptionRequest() throws XMLStreamException {
         start(QN_UPDATE_SENSOR_DESCRIPTION_REQUEST);
-        namespace(NS_SIR_PREFIX, NS_SIR);
+        namespaces();
         attr(AN_VERSION, SIR_SERVICE_VERSION);
         attr(AN_SERVICE, SIR_SERVICE_TYPE);
         writeSensorDescriptionToBeUpdated();
