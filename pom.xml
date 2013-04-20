@@ -32,7 +32,6 @@
         <license>
             <name>General Public License Version 2</name>
             <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
-            <distribution>repo</distribution>
         </license>
     </licenses>
     <developers>
